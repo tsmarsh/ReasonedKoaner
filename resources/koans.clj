@@ -2,6 +2,11 @@
 	["playthings" 
 		{"__" 
 			['()
+			 '(true)
+			 '()
+			 '(true)
+			 '(corn)
+			 '()
 			 '(true)]
 		}]
 ]
