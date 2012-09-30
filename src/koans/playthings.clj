@@ -1,4 +1,9 @@
 (meditations
   "What is the value of"
   (= (run* [q] u#) 
-  	__))
+  	__)
+
+  "What is the value of"
+  (= (run* [q] 
+  	(== true q)) __)
+)
