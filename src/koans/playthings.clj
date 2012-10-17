@@ -120,4 +120,120 @@
          (== q x)
          (== true x)))
     __)
+
+  "1.41 Basic clojure cond"
+  (= (cond false true :else false) __)
+
+  "1.43 What happens when we replace with succeed and fail?"
+  (= (cond false s# :else u#) __)
+
+  "1.44 Conde is logic equivalent of cond, but it doesn't have an else clause. The e stands for every line"
+  (= (run* (conde
+       (u# s#)))
+    __)
+
+  "1.47 What is the value of x?"
+  (= (run* [x]
+       (conde
+         ((== :olive x) s#)
+         ((== :oil x) s#)))
+    __)
+
+  "1.49 What is the value of x?"
+  (= (run 1 [x]
+       (conde
+         ((== :olive x) s#)
+         ((== :oil x) s#)))
+    __)
+
+  "1.50 Failing conditions are ignored"
+  (= (run* [x]
+       (conde
+         ((== :virgin x) u#)
+         ((== :olive x) s#)
+         (s# s#)
+         ((== :oil x) s#)))
+    __)
+
+  "1.52 It is easy to limit the results"
+  (= (run 2 [x]
+       (conde
+         ((== :extra x) s#)
+         ((== :virgin x) u#)
+         ((== :olive x) s#)
+         (s# s#)
+         ((== :oil x) s#)))
+    __)
+
+  "1.53 What is the value of r"
+  (= (run* [r]
+       (fresh [x y]
+         (== :split x)
+         (== :pea y)
+         (== (cons x (cons y ())) r )))
+    __ )
+
+  "1.54 What is the value of r"
+  (= (run* [r]
+       (fresh [x y]
+        (conde
+          ((== :split x) (== :pea y))
+          ((== :navy x) (== :bean y)))
+          (== (cons x (cons y (cons :soup ()))) r )))
+    __ )
+
+  (defn teacupo [x]
+      (conde
+        ((== :tea x) s#)
+        ((== :cup x) s#)))
+
+  "1.56 You can use functions to break the code up"
+  (= (run* [x] (teacupo x)) __)
+
+  "1.57 Which makes the value of r"
+  (= (run* [r]
+       (fresh [x y]
+         (conde
+           ((teacupo x) (== true y) s#)
+           ((== false x) (== true y)))
+         (== (cons x (cons y ())) r)))
+
+    __)
+
+  "1.58 and when the variables are fresh we get"
+  (= (run* [r]
+       (fresh [x y z]
+         (conde
+           ((== y x)(fresh [x]
+                      (== z x)))
+           ((fresh [x] (== y x)) (== z x)))
+         (== (cons y (cons z())) r)))
+    __)
+
+  "1.59 which looks like _.0 and _.1 come from the same variables, but they do not"
+  (= (run* [r]
+       (fresh [x y z]
+         (conde
+           ((== y x)(fresh [x]
+                      (== z x)))
+           ((fresh [x] (== y x)) (== z x)))
+         (== false x)
+         (== (cons y (cons z())) r)))
+    __)
+
+  "1.60 Remember that the value of an assignment is a goal"
+  (= (run* [q]
+       (let [a (== true q) b (== false q)] b))
+    __)
+
+  "1.61 and that the value of fresh and conde are also goals"
+
+  (= (run* [q]
+        (let [a (== true  q)
+              b (fresh [x]
+                  (== x q)
+                  (== false x))
+              c (conde
+                  ((== true q) s#))] b))
+    __ )
 )
